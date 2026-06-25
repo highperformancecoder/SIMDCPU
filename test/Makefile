@@ -12,7 +12,7 @@ LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS))
 
 VPATH= .. $(ECOLAB_HOME)/include
 
-GTESTOBJS=main.o basicOps.o
+GTESTOBJS=main.o basicOps.o add.o
 
 EXES=
 

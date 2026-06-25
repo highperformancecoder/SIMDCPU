@@ -43,7 +43,7 @@ namespace SIMDCPU
     Instruction() = default;
     explicit Instruction(Word word) { *this = reinterpret_cast<const Instruction&>(word); }
     Instruction(CPU::Opcodes opcode, CPU::Registers dest, CPU::Registers src1, CPU::Registers src2, CPU::PostOp postOp = CPU::none, bool incr = false, bool shift = false, CPU::ShiftDir shiftDir = CPU::left)
-      : opcode(opcode), dest(dest), src1(src1), src2(src2), postOp(postOp), incr(incr), shift(), shiftDir(shiftDir) {}
+      : opcode(opcode), dest(dest), src1(src1), src2(src2), postOp(postOp), incr(incr), shift(shift), shiftDir(shiftDir) {}
     Word asWord() const {return reinterpret_cast<const Word&>(*this);}
   };
 

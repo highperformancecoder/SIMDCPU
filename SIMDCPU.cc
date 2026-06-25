@@ -14,7 +14,7 @@ namespace SIMDCPU
       x&~y&(one*((op&4)==4)) |
       ~(x|y)&(one*((op&1)==1));
     if (instr.shift)
-      registers[instr.dest] = instr.shiftDir? registers[instr.dest] << 1: registers[instr.dest] << 1;
+      registers[instr.dest] = instr.shiftDir? registers[instr.dest] >> 1: registers[instr.dest] << 1;
     switch (instr.postOp)
       {
       case none: break;
@@ -25,7 +25,7 @@ namespace SIMDCPU
         if (instr.incr) registers[storeAddr]++;
         break;
       case jmpz: if (registers[test]==0)
-          registers[PC]=registers[PCprime];
+          registers[PC]++;
         break;
       }
     
