@@ -17,7 +17,9 @@ ifdef DPCPP
 FLAGS+=-DUSE_FLOAT
 endif
 
-MODELS=
+MODELS=SIMDTierra
+OBJS=assembler.o SIMDCPU.o soup.o
+
 
 all: $(MODELS:=.so)
 
@@ -25,15 +27,15 @@ all: $(MODELS:=.so)
 $(MODELS:=.o): %.o: %.cc 
 
 # how to build a model
-$(MODELS:=.so): %.so: %.o ../lib/libecolab$(ECOLIBS_EXT).a
-	$(LINK) $(FLAGS) -shared -Wl,-rpath $(ECOLAB_HOME)/lib $*.o $(LIBS) -o $@
+$(MODELS:=.so): %.so: %.o $(OBJS) 
+	$(LINK) $(FLAGS) -shared -Wl,-rpath $(ECOLAB_HOME)/lib $*.o $(OBJS) $(LIBS) -o $@
 
 #make MacOS application bundles
 $(MODELS:=.app): %.app: %
 	$(ECOLAB_HOME)/utils/mkmacapp $<
 
 ifneq ($(MAKECMDGOALS),clean)
-include $(MODELS:=.d)
+include $(MODELS:=.d) $(OBJS:.o=.d)
 endif
 
 clean:

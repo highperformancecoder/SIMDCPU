@@ -1,26 +1,20 @@
-#include "SIMDCPU.h"
+#include "assembler.h"
 #include "soup.h"
-#include "soup.cd"
-#include "classdesc.h"
+#include "ecolab_epilogue.h"
 
 using namespace std;
 using namespace classdesc;
 
 namespace SIMDCPU
 {
-  class Assembler
-  {
-    Word current;
-    public:
-    Assembler(Word start=0) : current(start) {}
-    Instruction parseLine(const std::string& line) {
+    Instruction Assembler::parseLine(const std::string& line) {
       istringstream iss(line);
-      string opCode, dest, src1, src2;
+      string opcode, dest, src1, src2;
       iss >> opcode >> dest >> src1 >> src2;
-      Instruction r(enumKey<CPU::Opcode>(opcode),
-                    enumKey<CPU::Registers>(dest),
-                    enumKey<CPU::Registers>(src1),
-                    enumKey<CPU::Registers>(src2));
+      Instruction r(CPU::Opcodes(enumKey<CPU::Opcodes>(opcode)),
+                    CPU::Registers(enumKey<CPU::Registers>(dest)),
+                    CPU::Registers(enumKey<CPU::Registers>(src1)),
+                    CPU::Registers(enumKey<CPU::Registers>(src2)));
 
       string next;
       while (iss) {
@@ -28,12 +22,24 @@ namespace SIMDCPU
         if (next=="#") break; // Comment, ignore rest of the line
         if (enum_keys<CPU::PostOp>().has(next)) 
           r.postOp = enumKey<CPU::PostOp>(next);
-        if (next=="shift") r.shift = 1;
-        if (enum_keys<CPU::ShiftDir>().has(next)) 
-          r.shiftDir = enumKey<CPU::ShiftDir>(next);
-        if (next=="incr") r.incr = 1;
+        if (enum_keys<CPU::PostPostOp>().has(next)) 
+          r.ppop = enumKey<CPU::PostPostOp>(next);
       }
       return r;
     }     
-  };
+
+  void Assembler::assembleLines(const std::string& lines)
+  {
+        istringstream iss(lines);
+        string line;
+        while (getline(iss, line)) {
+          if (line.empty() || line[0] == '#') continue; // Skip empty lines and comments
+          try
+            {
+              soup[current++] = parseLine(line).asWord();
+            }
+          catch(...) {} // absorb any errors in parsing, e.g. unknown opcode, register, etc.
+        }
+  }
+
 }

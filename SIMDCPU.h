@@ -1,6 +1,7 @@
 #ifndef SIMDCPU_H
 #define SIMDCPU_H
 #include "soup.h"
+#include <array>
 #include <ostream>
 
 namespace SIMDCPU
@@ -8,12 +9,13 @@ namespace SIMDCPU
   class CPU
   {
   public:
+    std::vector<Word>& soup=SIMDCPU::soup;
     constexpr static int addrBits = 5;
     constexpr static int numRegisters = 1<<addrBits;
-    Word registers[CPU::numRegisters];
+    std::array<Word,CPU::numRegisters> registers;
     void execute();
     void trace();
-
+    
     enum PostPostOp {nopp=0, incr, decr, shiftL, shiftR, full=7};
     enum PostOp {none=0, load, store, jmpz=3};
     enum Registers {PC, data, test, loadAddr, storeAddr, R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11};
@@ -67,5 +69,40 @@ namespace SIMDCPU
 #define CLASSDESC_RESTProcess___SIMDCPU__Instruction
 #define CLASSDESC_json_pack___SIMDCPU__Instruction
 #define CLASSDESC_json_unpack___SIMDCPU__Instruction
+
+#include "SIMDCPU.cd"
+
+namespace classdesc_access
+{
+  template <> struct access_pack<SIMDCPU::Instruction>
+  {
+    template <class T>
+    void operator()(classdesc::pack_t& j, const std::string& d, const T& x) 
+    {::pack(j,d,reinterpret_cast<const SIMDCPU::Word&>(x));}
+  };
+  template <> struct access_unpack<SIMDCPU::Instruction>
+  {
+    template <class T>
+    void operator()(classdesc::unpack_t& j, const std::string& d, T& x)
+    {::unpack(j,d,reinterpret_cast<typename classdesc::transfer_const<T,SIMDCPU::Word>::type&>(x));}
+  };
+  
+  template <> struct access_RESTProcess<SIMDCPU::Instruction>:
+    public classdesc::NullDescriptor<classdesc::RESTProcess_t>{};
+
+  template <> struct access_json_pack<SIMDCPU::Instruction>
+  {
+    template <class T>
+    void operator()(classdesc::json_pack_t& j, const std::string& d, const T& x)
+    {::json_pack(j,d,reinterpret_cast<const SIMDCPU::Word&>(x));}
+  };
+  template <> struct access_json_unpack<SIMDCPU::Instruction>
+  {
+    template <class T>
+    void operator()(classdesc::json_pack_t& j, const std::string& d, T& x)
+    {::json_unpack(j,d,reinterpret_cast<typename classdesc::transfer_const<T,SIMDCPU::Word>::type&>(x));}
+  };
+
+}
 
 #endif

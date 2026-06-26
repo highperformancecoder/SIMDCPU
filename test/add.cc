@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../SIMDCPU.h"
-
+#include "ecolab_epilogue.h"
 #include <iostream>
 
 using namespace SIMDCPU;

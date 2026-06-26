@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../SIMDCPU.h"
-
+#include "ecolab_epilogue.h"
 #include <iostream>
 
 using namespace SIMDCPU;
@@ -24,14 +24,15 @@ TEST_F(TestCPU, Replicator) {
   soup[11]=Instruction(Copy1, R1, PC, PC).asWord(); // copy loop
   soup[12]=Instruction(Copy1, loadAddr, loadAddr, loadAddr, load, incr).asWord();
   soup[13]=Instruction(Copy1, storeAddr, storeAddr, storeAddr, store, incr).asWord();
-  soup[14]=Instruction(Xor, test, PC, R2, jmpz).asWord();
+  soup[14]=Instruction(Xor, test, loadAddr, R2, jmpz).asWord();
   soup[15]=Instruction(Copy1, PC, R1, R1).asWord(); // goto copy loop
   soup[16]=Instruction(Not1, cmpl(R0), cmpl(R0), cmpl(R0), jmpz, full).asWord(); //complementary template at end
 
   registers[PC]=0;
   registers[storeAddr]=20;
   for (int i=0; i<500 && registers[PC]<17; ++i)
-    execute();
+    //execute();
+    trace();
   for (int i=0; i<17; ++i)
     {
       //cout<<i<<endl;

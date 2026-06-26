@@ -1,6 +1,6 @@
 #include "SIMDCPU.h"
 #include "SIMDCPU.cd"
-#include "classdesc_epilogue.h"
+#include "ecolab_epilogue.h"
 using namespace std;
 using namespace classdesc;
 

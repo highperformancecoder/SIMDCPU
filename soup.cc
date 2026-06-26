@@ -1,4 +1,6 @@
 #include "soup.h"
+#include "ecolab_epilogue.h"
+using namespace std;
 namespace SIMDCPU {
-  Word soup[soupSize];
+  vector<Word> soup(soupSize);
 }

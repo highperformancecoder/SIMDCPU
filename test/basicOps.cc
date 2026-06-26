@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../SIMDCPU.h"
-
+#include "ecolab_epilogue.h"
 using namespace SIMDCPU;
 
 struct TestCPU: public CPU, public testing::Test {};
